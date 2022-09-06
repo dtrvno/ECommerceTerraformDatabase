@@ -7,40 +7,11 @@ provider "aws" {
     Name = "Default VPC"
   }
 }
-resource "aws_security_group" "my_database_subnet_group" {
-  
-  name        = "allow_web"
-  description = "Allow web traffic"
-  vpc_id = aws_default_vpc.myvpc.id
 
-
-  
-  ingress {
-    description      = "My db fgroup"
-    from_port        = 3306
-    to_port          = 3306
-    protocol         = "TCP"
-    cidr_blocks      = ["0.0.0.0/0"]
-    
-  }
-
-  egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    
-  }
-
-  tags = {
-    Name = "ecommerce_public"
-  }
-}
 resource "aws_db_instance" "ecommerce2" {
   allocated_storage    = 10
   engine               = "mysql"
-  engine_version       = "8.0.28"
-  instance_class       = "db.m5.large"
+  instance_class       = "db.t2.small"
   db_name                 = "ecommerce2"
   username             = "ecommerceapp"
   password             = "ecommerceapp"
@@ -49,6 +20,7 @@ resource "aws_db_instance" "ecommerce2" {
   skip_final_snapshot = true
   snapshot_identifier="ecommerce2-snapshot"
   identifier="ecommerce2"
+  vpc_security_group_ids=[aws_security_group.security_group_db.id]
 
 }
 
@@ -74,7 +46,7 @@ resource "aws_db_subnet_group" "mydbgroup" {
 resource "aws_subnet" "mydbsubnet1" {
   availability_zone = "us-west-1b"
   vpc_id=aws_default_vpc.myvpc.id
-  cidr_block="172.31.128.0/24"
+  cidr_block="172.31.2.0/24"
   map_public_ip_on_launch="true"
   tags = {
     Name="db_subnet1"
@@ -84,7 +56,7 @@ resource "aws_subnet" "mydbsubnet1" {
 resource "aws_subnet" "mydbsubnet2" {
   availability_zone = "us-west-1c"
   vpc_id=aws_default_vpc.myvpc.id
-  cidr_block="172.31.144.0/24"
+  cidr_block="172.31.3.0/24"
   map_public_ip_on_launch="true"
   tags = {
     Name="db_subnet2"
