@@ -9,7 +9,7 @@ provider "aws" {
 }
 
 resource "aws_db_instance" "ecommerce2" {
-  allocated_storage    = 10
+  allocated_storage    = 20
   engine               = "mysql"
   instance_class       = "db.t2.small"
   db_name                 = "ecommerce2"
